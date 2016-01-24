@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+
+use strict;
+
+if ($#ARGV != 0){
+    die("Usage: ssa name_of_key_to_add\n");
+}
+
+my $keyName = $ARGV[0];
+my $match = $keyName;
+if (!($keyName =~ /\//)){
+    $match = ".ssh/".$keyName;
+    $keyName = $ENV{'HOME'}."/.ssh/".$keyName;
+}
+
+my $keysLoaded = `ssh-add -l`;
+
+if (!($keysLoaded =~ /$match/s)){
+    my @args = ('ssh-add', $keyName);
+    system(@args);
+}
